@@ -30,6 +30,7 @@
                 android:textAlignment="center"
                 android:textColor="@color/lavender"
                 android:textSize="36sp"
+                android:fontFamily="@font/lexend"
                 android:textStyle="bold" />
 
             <EditText
@@ -37,30 +38,42 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="40dp"
+                android:background="@drawable/inut_bg"
+                android:drawableLeft="@drawable/ic_person"
                 android:drawablePadding="8dp"
+                android:fontFamily="@font/lexend"
                 android:hint="Username"
                 android:padding="8dp"
-                android:textColor="@color/black" />
+                android:textColor="@color/lavender"
+                android:textColorHint="@color/lavender" />
 
             <EditText
                 android:id="@+id/login_password"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
+                android:background="@drawable/inut_bg"
+                android:drawableLeft="@drawable/ic_security"
                 android:drawablePadding="8dp"
+                android:fontFamily="@font/lexend"
                 android:hint="Password"
                 android:inputType="textPassword"
                 android:padding="8dp"
-                android:textColor="@color/black" />
+                android:textColor="@color/lavender"
+                android:textColorHint="@color/lavender" />
 
             <Button
                 android:id="@+id/login_button"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="30dp"
+                android:background="@drawable/btn_bg"
                 android:backgroundTint="@color/lavender"
+                android:fontFamily="@font/lexend"
                 android:text="Login"
+                android:textColor="@color/white"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 app:cornerRadius="20dp" />
 
             <TextView
@@ -69,10 +82,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
+                android:fontFamily="@font/lexend"
                 android:padding="8dp"
                 android:text="Not yet registered? Sign Up"
                 android:textColor="@color/lavender"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

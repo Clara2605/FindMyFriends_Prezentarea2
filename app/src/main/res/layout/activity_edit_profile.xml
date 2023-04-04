@@ -31,6 +31,7 @@
                 android:textSize="36sp"
                 android:textAlignment="center"
                 android:textStyle="bold"
+                android:fontFamily="@font/lexend"
                 android:textColor="@color/lavender"/>
 
             <EditText
@@ -39,9 +40,13 @@
                 android:id="@+id/editName"
                 android:layout_marginTop="40dp"
                 android:padding="8dp"
+                android:background="@drawable/inut_bg"
+                android:drawableLeft="@drawable/ic_name"
                 android:hint="Name"
+                android:fontFamily="@font/lexend"
                 android:drawablePadding="8dp"
-                android:textColor="@color/black"/>
+                android:textColor="@color/lavender"
+                android:textColorHint="@color/lavender"/>
 
             <EditText
                 android:layout_width="match_parent"
@@ -49,9 +54,13 @@
                 android:id="@+id/editEmail"
                 android:layout_marginTop="20dp"
                 android:padding="8dp"
+                android:drawableLeft="@drawable/ic_email"
                 android:hint="Email"
                 android:drawablePadding="8dp"
-                android:textColor="@color/black"/>
+                android:background="@drawable/inut_bg"
+                android:fontFamily="@font/lexend"
+                android:textColor="@color/lavender"
+                android:textColorHint="@color/lavender"/>
 
 
             <EditText
@@ -62,18 +71,26 @@
                 android:padding="8dp"
                 android:hint="Username"
                 android:drawablePadding="8dp"
-                android:textColor="@color/black"/>
+                android:drawableLeft="@drawable/ic_person"
+                android:background="@drawable/inut_bg"
+                android:fontFamily="@font/lexend"
+                android:textColor="@color/lavender"
+                android:textColorHint="@color/lavender"/>
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:id="@+id/editPassword"
+                android:drawableLeft="@drawable/ic_security"
                 android:layout_marginTop="20dp"
                 android:padding="8dp"
+                android:background="@drawable/inut_bg"
                 android:hint="Password"
                 android:inputType="textPassword"
+                android:fontFamily="@font/lexend"
                 android:drawablePadding="8dp"
-                android:textColor="@color/black"/>
+                android:textColor="@color/lavender"
+                android:textColorHint="@color/lavender"/>
 
             <Button
                 android:layout_width="match_parent"
@@ -83,6 +100,10 @@
                 android:textSize="18sp"
                 android:layout_marginTop="30dp"
                 android:backgroundTint="@color/lavender"
+                android:fontFamily="@font/lexend"
+                android:background="@drawable/btn_bg"
+                android:textColor="@color/white"
+                android:textStyle="bold"
                 app:cornerRadius = "20dp"/>
 
         </LinearLayout>
