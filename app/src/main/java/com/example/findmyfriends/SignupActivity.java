@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +18,8 @@ public class SignupActivity extends AppCompatActivity {
 
     EditText signupName, signupUsername, signupEmail, signupPassword;
     TextView loginRedirectText;
+    ImageView profileImg;
+    String imageURL;
     Button signupButton;
     FirebaseDatabase database;
     DatabaseReference reference;
@@ -44,8 +47,9 @@ public class SignupActivity extends AppCompatActivity {
                 String email = signupEmail.getText().toString();
                 String username = signupUsername.getText().toString();
                 String password = signupPassword.getText().toString();
+                //String profileImg = imageURL.getText().toString();
 
-                HelperClass helperClass = new HelperClass(name, email, username, password);
+                HelperClass helperClass = new HelperClass(name, email, username, password, imageURL);
                 reference.child(username).setValue(helperClass);
 
                 Toast.makeText(SignupActivity.this, "You have signup successfully!", Toast.LENGTH_SHORT).show();

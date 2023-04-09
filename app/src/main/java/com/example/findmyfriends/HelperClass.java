@@ -2,7 +2,20 @@ package com.example.findmyfriends;
 
 public class HelperClass {
 
-    String name, email, username, password;
+    String name;
+    String email;
+    String username;
+    String password;
+    String profileImage;
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
 
     public String getName() {
         return name;
@@ -36,11 +49,12 @@ public class HelperClass {
         this.password = password;
     }
 
-    public HelperClass(String name, String email, String username, String password) {
+    public HelperClass(String name, String email, String username, String password, String profileImage) {
         this.name = name;
         this.email = email;
         this.username = username;
         this.password = password;
+        this.profileImage = profileImage;
     }
 
     public HelperClass() {

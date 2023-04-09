@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+   <item
+      app:showAsAction="always"
+      android:title=""
+      android:icon="@drawable/ic_menu">
+
+      <menu
+          android:background="@drawable/header_shape">
+         <item
+             android:id="@+id/profileMenu"
+             android:title="Profile"
+             app:showAsAction="never"
+             android:icon="@drawable/ic_name"
+             android:fontFamily="@font/lexend"
+             android:textColor="@color/lavender"
+             android:textStyle="bold"/>
+         <item
+             android:id="@+id/maps"
+             android:title="Maps"
+             app:showAsAction="never"
+             android:icon="@drawable/ic_map"
+             android:fontFamily="@font/lexend"
+             android:textColor="@color/lavender"
+             android:textStyle="bold"/>
+         <item
+             android:id="@+id/friends"
+             android:title="Friends"
+             app:showAsAction="never"
+             android:icon="@drawable/ic_friends"
+             android:fontFamily="@font/lexend"
+             android:textColor="@color/lavender"
+             android:textStyle="bold"/>
+         <item
+             android:id="@+id/logout"
+             android:title="LogOut"
+             app:showAsAction="never"
+             android:icon="@drawable/ic_logout"
+             android:fontFamily="@font/lexend"
+             android:textColor="@color/lavender"
+             android:textStyle="bold"/>
+
+      </menu>
+   </item>
+</menu>

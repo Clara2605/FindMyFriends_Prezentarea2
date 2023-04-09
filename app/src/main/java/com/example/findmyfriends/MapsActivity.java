@@ -1,11 +1,14 @@
 package com.example.findmyfriends;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -90,6 +93,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.profileMenu){
+            Intent intent = new Intent(MapsActivity.this,ProfileActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else if (id == R.id.maps) {
+            Intent intent = new Intent(MapsActivity.this,MapsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else if (id == R.id.friends) {
+            Intent intent = new Intent(MapsActivity.this,FriendsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else if (id == R.id.logout) {
+            Intent intent = new Intent(MapsActivity.this,LoginActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     private void getLocation() {
         if (ActivityCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
