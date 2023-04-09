@@ -1,5 +1,7 @@
 package com.example.findmyfriends;
 
+import static com.example.findmyfriends.ProfileActivity.profileUsername;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -28,8 +30,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.core.Path;
 
 import java.io.IOException;
 import java.util.List;
@@ -44,6 +52,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     FusedLocationProviderClient fusedClient;
     private static final int REQUEST_CODE = 101;
     SearchView searchView;
+
+    DatabaseReference reference;
+    FirebaseDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +156,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
                     assert supportMapFragment != null;
                     supportMapFragment.getMapAsync(MapsActivity.this);
+
+                    //add location to firebase
+                    String userUsername = profileUsername.getText().toString().trim();
+                    database = FirebaseDatabase.getInstance();
+                    reference = database.getReference("users");
+                    Query checkUserDatabase = reference.orderByChild("username").equalTo(userUsername);
+                    LocationHelper helper = new LocationHelper(location.getLongitude(),location.getLatitude());
+
+                    FirebaseDatabase.getInstance().getReference("users/"+userUsername+"/Current Location")
+                    .setValue(helper).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful()){
+                                        Toast.makeText(MapsActivity.this, "Location Saved", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else{
+                                        Toast.makeText(MapsActivity.this, "Location Not Saved", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
                 }
 
             }
@@ -168,5 +199,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 getLocation();
             }
         }
+    }
+
+    public void onLocationChanged(Location location){
+
     }
 }

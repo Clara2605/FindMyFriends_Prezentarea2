@@ -82,6 +82,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     Intent photoPicker = new Intent(Intent.ACTION_PICK);
                     photoPicker.setType("image/*");
                     activityResultLauncher.launch(photoPicker);
+                    //startActivityForResult(photoPicker,REQUEST_CODE);
                 }
             });
 
@@ -89,7 +90,7 @@ public class EditProfileActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isNameChanged() || isPasswordChanged() || isEmailChanged()){
+                if (isNameChanged() || isPasswordChanged() || isEmailChanged() ){
                     Toast.makeText(EditProfileActivity.this, "Saved", Toast.LENGTH_SHORT).show();
                     saveData();
                 } else {
@@ -134,7 +135,7 @@ public class EditProfileActivity extends AppCompatActivity {
         //We are changing the child from title to currentDate,
         // because we will be updating title as well and it may affect child value.
         String currentDate = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-        FirebaseDatabase.getInstance().getReference("Android Tutorials").child(currentDate)
+        FirebaseDatabase.getInstance().getReference("Android Images").child(currentDate)
                 .setValue(dataClass).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {

@@ -24,17 +24,22 @@ import com.squareup.picasso.Picasso;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    TextView profileName, profileEmail, profileUsername, profilePassword;
+    TextView profileName;
+    TextView profileEmail;
+    static TextView profileUsername;
+    TextView profilePassword;
     TextView titleName, titleUsername;
     Button editProfile;
     ImageView profileImg;
     String imageURL;
     Uri uri;
+    DatabaseReference reference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        reference = FirebaseDatabase.getInstance().getReference("users");
 
         profileName = findViewById(R.id.profileName);
         profileEmail = findViewById(R.id.profileEmail);

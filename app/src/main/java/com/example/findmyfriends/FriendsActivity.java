@@ -10,6 +10,9 @@ import android.view.MenuItem;
 
 public class FriendsActivity extends AppCompatActivity {
 
+    //FirebaseRecyclerOptions<Users>options;
+   // FirebaseRecyclerAdapter<Users,FriendsViewHolder>adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
