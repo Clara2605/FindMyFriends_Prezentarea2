@@ -10,6 +10,7 @@
       <menu
           android:background="@drawable/header_shape">
          <item
+             android:background="@color/lavender"
              android:id="@+id/profileMenu"
              android:title="Profile"
              app:showAsAction="never"

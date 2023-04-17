@@ -76,15 +76,15 @@ public class EditProfileActivity extends AppCompatActivity {
                 }
         );
         //image
-             profileImg.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent photoPicker = new Intent(Intent.ACTION_PICK);
-                    photoPicker.setType("image/*");
-                    activityResultLauncher.launch(photoPicker);
-                    //startActivityForResult(photoPicker,REQUEST_CODE);
-                }
-            });
+        profileImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent photoPicker = new Intent(Intent.ACTION_PICK);
+                photoPicker.setType("image/*");
+                activityResultLauncher.launch(photoPicker);
+                //startActivityForResult(photoPicker,REQUEST_CODE);
+            }
+        });
 
 
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -102,7 +102,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     //image
     public void saveData(){
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Android Images")
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference("users").child(usernameUser)
                 .child(uri.getLastPathSegment());
         AlertDialog.Builder builder = new AlertDialog.Builder(EditProfileActivity.this);
         builder.setCancelable(false);
@@ -135,7 +135,7 @@ public class EditProfileActivity extends AppCompatActivity {
         //We are changing the child from title to currentDate,
         // because we will be updating title as well and it may affect child value.
         String currentDate = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-        FirebaseDatabase.getInstance().getReference("Android Images").child(currentDate)
+        FirebaseDatabase.getInstance().getReference("users").child(usernameUser)
                 .setValue(dataClass).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -230,3 +230,4 @@ public class EditProfileActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+
