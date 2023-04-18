@@ -13,6 +13,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,12 +35,14 @@ public class ProfileActivity extends AppCompatActivity {
     String imageURL;
     Uri uri;
     DatabaseReference reference;
+    FirebaseAuth mAuth;
+    FirebaseUser mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        reference = FirebaseDatabase.getInstance().getReference("users");
+        reference = FirebaseDatabase.getInstance().getReference("Users");
 
         profileName = findViewById(R.id.profileName);
         profileEmail = findViewById(R.id.profileEmail);
@@ -48,6 +52,9 @@ public class ProfileActivity extends AppCompatActivity {
         titleUsername = findViewById(R.id.titleUsername);
         editProfile = findViewById(R.id.editButton);
         profileImg = findViewById(R.id.profileImg);
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
+
 
         showAllUserData();
 
@@ -57,9 +64,6 @@ public class ProfileActivity extends AppCompatActivity {
                 passUserData();
             }
         });
-
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
 
     }
 
@@ -115,8 +119,8 @@ public class ProfileActivity extends AppCompatActivity {
     public void passUserData(){
         String userUsername = profileUsername.getText().toString().trim();
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
-        Query checkUserDatabase = reference.orderByChild("username").equalTo(userUsername);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
+        Query checkUserDatabase = reference.orderByChild(mUser.getUid());
 
         checkUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -124,10 +128,10 @@ public class ProfileActivity extends AppCompatActivity {
 
                 if (snapshot.exists()){
 
-                    String nameFromDB = snapshot.child(userUsername).child("name").getValue(String.class);
-                    String emailFromDB = snapshot.child(userUsername).child("email").getValue(String.class);
-                    String usernameFromDB = snapshot.child(userUsername).child("username").getValue(String.class);
-                    String passwordFromDB = snapshot.child(userUsername).child("password").getValue(String.class);
+                    String nameFromDB = snapshot.child(mUser.getUid()).child("name").getValue(String.class);
+                    String emailFromDB = snapshot.child(mUser.getUid()).child("email").getValue(String.class);
+                    String usernameFromDB = snapshot.child(mUser.getUid()).child("username").getValue(String.class);
+                    String passwordFromDB = snapshot.child(mUser.getUid()).child("password").getValue(String.class);
 
                     Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
 

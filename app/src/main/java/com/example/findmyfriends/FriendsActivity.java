@@ -34,13 +34,13 @@ public class FriendsActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
 
-//    private RecyclerView friend_list_RV;
+    private RecyclerView friend_list_RV;
 //
 //    private DatabaseReference friendsDatabaseReference;
 //    private DatabaseReference userDatabaseReference;
-//    private FirebaseAuth mAuth;
-//
-//    String current_user_id;
+
+
+    String current_user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,38 +50,47 @@ public class FriendsActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.friendList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mUserRef = FirebaseDatabase.getInstance().getReference().child("users");
+        mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
         LoadUsers("");
-//
-//        mAuth = FirebaseAuth.getInstance();
-//        current_user_id = mAuth.getCurrentUser().getUid();
+
+        mAuth = FirebaseAuth.getInstance();
+        current_user_id = mAuth.getCurrentUser().getUid();
 
 //        friendsDatabaseReference = FirebaseDatabase.getInstance().getReference().child("friends").child(current_user_id);
 //        friendsDatabaseReference.keepSynced(true); // for offline
-//
-//        userDatabaseReference = FirebaseDatabase.getInstance().getReference().child("users");
+
+//        userDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
 //        userDatabaseReference.keepSynced(true); // for offline
 
 
-//        // Setup recycler view
-//        friend_list_RV = findViewById(R.id.friendList);
-//        friend_list_RV.setHasFixedSize(true);
-//        friend_list_RV.setLayoutManager(new LinearLayoutManager(this));
+        // Setup recycler view
+        friend_list_RV = findViewById(R.id.friendList);
+        friend_list_RV.setHasFixedSize(true);
+        friend_list_RV.setLayoutManager(new LinearLayoutManager(this));
 
-       // showPeopleList();
+        //showPeopleList();
     }
 
     private void LoadUsers(String strUser) {
+        //String username = profileUsername.getText().toString().trim();
         Query query = mUserRef.orderByChild("username").startAt(strUser).endAt(strUser+"\uf8ff");
         options = new FirebaseRecyclerOptions.Builder<Users>().setQuery(query,Users.class).build();
         adapter = new FirebaseRecyclerAdapter<Users, FriendsViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull FriendsViewHolder holder, int position, @NonNull Users model) {
-                Picasso.get().load(model.getProfileImage()).into(holder.profileImg);
-                holder.username.setText(model.getUsername());
-                holder.name.setText(model.getName());
+                if(mUser.getUid().equals(getRef(position).getKey().toString())) {
+               // if(mUserRef.orderByChild("username").equalTo(username)){
+                //if(mUserRef.orderByChild("username").equalTo(String.valueOf(holder.username))){
+                    Picasso.get().load(model.getProfileImage()).into(holder.profileImg);
+                    holder.username.setText(model.getUsername());
+                    holder.name.setText(model.getName());
+                }
+                else{
+                    holder.itemView.setVisibility(View.GONE);
+                    holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0,0));
+                }
 
             }
 

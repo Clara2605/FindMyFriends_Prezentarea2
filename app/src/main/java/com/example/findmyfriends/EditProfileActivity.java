@@ -24,14 +24,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import java.text.DateFormat;
-import java.util.Calendar;
 
 public class EditProfileActivity extends AppCompatActivity {
 
@@ -41,14 +40,18 @@ public class EditProfileActivity extends AppCompatActivity {
     Uri uri;
     Button saveButton;
     String nameUser, emailUser, usernameUser, passwordUser;
+
     DatabaseReference reference;
+    FirebaseAuth mAuth;
+    FirebaseUser mUser;
+    StorageReference storageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        reference = FirebaseDatabase.getInstance().getReference("users");
+
 
         profileImg = findViewById(R.id.profileImg);
         editName = findViewById(R.id.editName);
@@ -57,7 +60,13 @@ public class EditProfileActivity extends AppCompatActivity {
         editPassword = findViewById(R.id.editPassword);
         saveButton = findViewById(R.id.saveButton);
 
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
+        reference = FirebaseDatabase.getInstance().getReference("Users");
+        storageRef = FirebaseStorage.getInstance().getReference().child("profileImage");
         showData();
+
+
 
         //image
         ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
@@ -102,7 +111,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     //image
     public void saveData(){
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference("users").child(usernameUser)
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference("Users").child(mUser.getUid())
                 .child(uri.getLastPathSegment());
         AlertDialog.Builder builder = new AlertDialog.Builder(EditProfileActivity.this);
         builder.setCancelable(false);
@@ -117,6 +126,22 @@ public class EditProfileActivity extends AppCompatActivity {
                 Uri urlImage = uriTask.getResult();
                 imageURL = urlImage.toString();
                 uploadData();
+//                HashMap hashMap = new HashMap();
+//                hashMap.put("profileImage",urlImage.toString());
+//                reference.child(mUser.getUid()).updateChildren(hashMap).addOnSuccessListener(new OnSuccessListener() {
+//                    @Override
+//                    public void onSuccess(Object o) {
+//                        Toast.makeText(EditProfileActivity.this, "Setup Profile completed", Toast.LENGTH_SHORT).show();
+//
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast.makeText(EditProfileActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+//
+//                    }
+//                });
+
                 dialog.dismiss();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -134,8 +159,8 @@ public class EditProfileActivity extends AppCompatActivity {
         HelperClass dataClass = new HelperClass(nameUser, emailUser, usernameUser, passwordUser, imageURL);
         //We are changing the child from title to currentDate,
         // because we will be updating title as well and it may affect child value.
-        String currentDate = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-        FirebaseDatabase.getInstance().getReference("users").child(usernameUser)
+//        String currentDate = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+        FirebaseDatabase.getInstance().getReference("Users").child(mUser.getUid())
                 .setValue(dataClass).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {

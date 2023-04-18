@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -31,6 +32,7 @@ public class SignupActivity extends AppCompatActivity {
     DatabaseReference reference;
     ProgressDialog mLoadingBAr;
     FirebaseAuth mAuth;
+    FirebaseUser mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +46,15 @@ public class SignupActivity extends AppCompatActivity {
         loginRedirectText = findViewById(R.id.loginRedirectText);
         signupButton = findViewById(R.id.signup_button);
         mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
         mLoadingBAr = new ProgressDialog(this);
 
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                database = FirebaseDatabase.getInstance();
-                reference = database.getReference("users");
+//                database = FirebaseDatabase.getInstance();
+//                reference = database.getReference("Users");
 
                 String name = signupName.getText().toString();
                 String email = signupEmail.getText().toString();
@@ -59,8 +62,8 @@ public class SignupActivity extends AppCompatActivity {
                 String password = signupPassword.getText().toString();
                 //String profileImg = imageURL.getText().toString();
 
-                HelperClass helperClass = new HelperClass(name, email, username, password, imageURL);
-                reference.child(username).setValue(helperClass);
+//                HelperClass helperClass = new HelperClass(name, email, username, password, imageURL);
+//                reference.child(username).setValue(helperClass);
 
                 if(name.isEmpty() || email.isEmpty() || username.isEmpty() || password.isEmpty()){
                     Toast.makeText(SignupActivity.this, "All fields are mandatory", Toast.LENGTH_SHORT).show();
@@ -77,17 +80,26 @@ public class SignupActivity extends AppCompatActivity {
 //                        mLoadingBAr.setMessage("Please Wait, While your Credentials");
 //                        mLoadingBAr.setCanceledOnTouchOutside(false);
 //                        mLoadingBAr.show();
-//                        mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<AuthResult> task) {
-//                                if(task.isSuccessful()){
+
+                       mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                               if(task.isSuccessful()){
                                     Toast.makeText(SignupActivity.this, "You have signup successfully!", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                                     startActivity(intent);
                                     //mLoadingBAr.dismiss();
-//                                }
-//                            }
-//                        });
+                                }
+                               else{
+                                   Toast.makeText(SignupActivity.this, "Registration Failed!", Toast.LENGTH_SHORT).show();
+                               }
+                            }
+                        });
+
+//                        database = FirebaseDatabase.getInstance();
+//                        reference = database.getReference("Users");
+//                        HelperClass helperClass = new HelperClass(name, email, username, password, imageURL);
+//                        reference.child(mUser.getUid()).setValue(helperClass);
 
                     }
 
