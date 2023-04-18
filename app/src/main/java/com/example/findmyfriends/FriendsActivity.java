@@ -1,5 +1,7 @@
 package com.example.findmyfriends;
 
+import static com.example.findmyfriends.ProfileActivity.profileUsername;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +12,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -75,13 +78,24 @@ public class FriendsActivity extends AppCompatActivity {
 
     private void LoadUsers(String strUser) {
         Query query = mUserRef.orderByChild("username").startAt(strUser).endAt(strUser+"\uf8ff");
+
         options = new FirebaseRecyclerOptions.Builder<Users>().setQuery(query,Users.class).build();
         adapter = new FirebaseRecyclerAdapter<Users, FriendsViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull FriendsViewHolder holder, int position, @NonNull Users model) {
-                Picasso.get().load(model.getProfileImage()).into(holder.profileImg);
-                holder.username.setText(model.getUsername());
-                holder.name.setText(model.getName());
+
+                String userUsername = profileUsername.getText().toString().trim();
+                Query checkUserDatabase = mUserRef.orderByChild("username");
+                if(!checkUserDatabase.equals(userUsername)){
+                    Picasso.get().load(model.getProfileImage()).into(holder.profileImg);
+                    holder.username.setText(model.getUsername());
+                    holder.name.setText(model.getName());
+                }
+                else {
+                    holder.itemView.setVisibility(View.GONE);
+                    holder.itemView.setLayoutParams(new ViewGroup.LayoutParams(0,0));
+                }
+
 
             }
 
@@ -97,8 +111,28 @@ public class FriendsActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
+
+        getMenuInflater().inflate(R.menu.search_menu,menu);
+        MenuItem menuItem = menu.findItem(R.id.search);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                LoadUsers(newText);
+                return false;
+            }
+        });
+
         getMenuInflater().inflate(R.menu.menu,menu);
         return true;
     }
