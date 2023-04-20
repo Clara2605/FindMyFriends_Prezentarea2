@@ -10,12 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -37,6 +33,8 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+
+
         signupName = findViewById(R.id.signup_name);
         signupEmail = findViewById(R.id.signup_email);
         signupUsername = findViewById(R.id.signup_username);
@@ -45,6 +43,7 @@ public class SignupActivity extends AppCompatActivity {
         signupButton = findViewById(R.id.signup_button);
         mAuth = FirebaseAuth.getInstance();
         mLoadingBAr = new ProgressDialog(this);
+
 
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,8 +57,9 @@ public class SignupActivity extends AppCompatActivity {
                 String username = signupUsername.getText().toString();
                 String password = signupPassword.getText().toString();
                 //String profileImg = imageURL.getText().toString();
-
+                //imageURL=getIntent().seti("profileImage");
                 HelperClass helperClass = new HelperClass(name, email, username, password, imageURL);
+                helperClass.setProfileImage("https://firebasestorage.googleapis.com/v0/b/findmyfriends-6cea2.appspot.com/o/users%2Fclara%2F232519087?alt=media&token=5968391c-5330-40f2-8b53-a6cd58c0e933");
                 reference.child(username).setValue(helperClass);
 
                 if(name.isEmpty() || email.isEmpty() || username.isEmpty() || password.isEmpty()){

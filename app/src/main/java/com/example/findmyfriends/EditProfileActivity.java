@@ -24,23 +24,23 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import java.text.DateFormat;
-import java.util.Calendar;
+import com.squareup.picasso.Picasso;
 
 public class EditProfileActivity extends AppCompatActivity {
 
     EditText editName, editEmail, editUsername, editPassword;
     ImageView profileImg;
-    String imageURL;
     Uri uri;
     Button saveButton;
-    String nameUser, emailUser, usernameUser, passwordUser;
+    String nameUser, emailUser, usernameUser, passwordUser,imageURL,editImageUrl;
     DatabaseReference reference;
 
     @Override
@@ -48,7 +48,14 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        reference = FirebaseDatabase.getInstance().getReference("users");
+        nameUser = getIntent().getStringExtra("name");
+        emailUser = getIntent().getStringExtra("email");
+        usernameUser = getIntent().getStringExtra("username");
+        passwordUser = getIntent().getStringExtra("password");
+        imageURL = getIntent().getStringExtra("profileImage");
+        //editImageUrl = getIntent().getStringExtra("profileImage");
+
+        reference = FirebaseDatabase.getInstance().getReference().child("users");
 
         profileImg = findViewById(R.id.profileImg);
         editName = findViewById(R.id.editName);
@@ -128,13 +135,8 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     public void uploadData(){
-//        String title = uploadTopic.getText().toString();
-//        String desc = uploadDesc.getText().toString();
-//        String lang = uploadLang.getText().toString();
         HelperClass dataClass = new HelperClass(nameUser, emailUser, usernameUser, passwordUser, imageURL);
-        //We are changing the child from title to currentDate,
-        // because we will be updating title as well and it may affect child value.
-        String currentDate = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+
         FirebaseDatabase.getInstance().getReference("users").child(usernameUser)
                 .setValue(dataClass).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -184,18 +186,31 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     public void showData(){
+        reference.child(usernameUser).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                nameUser = snapshot.child("name").getValue().toString();
+                emailUser = snapshot.child("email").getValue().toString();
+                usernameUser = snapshot.child("username").getValue().toString();
+                passwordUser = snapshot.child("password").getValue().toString();
+                imageURL = snapshot.child("profileImage").getValue().toString();
 
-        Intent intent = getIntent();
+                editName.setText(nameUser);
+                editEmail.setText(emailUser);
+                editUsername.setText(usernameUser);
+                editPassword.setText(passwordUser);
+                //editImageUrl.setText(imageURL);
+                Picasso.get().load(imageURL).into(profileImg);
+            }
 
-        nameUser = intent.getStringExtra("name");
-        emailUser = intent.getStringExtra("email");
-        usernameUser = intent.getStringExtra("username");
-        passwordUser = intent.getStringExtra("password");
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(EditProfileActivity.this, ""+error.getMessage().toString(), Toast.LENGTH_SHORT).show();
 
-        editName.setText(nameUser);
-        editEmail.setText(emailUser);
-        editUsername.setText(usernameUser);
-        editPassword.setText(passwordUser);
+            }
+        });
+
+
     }
 
     @Override

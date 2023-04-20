@@ -95,7 +95,14 @@ public class FriendsActivity extends AppCompatActivity {
                     holder.itemView.setVisibility(View.GONE);
                     holder.itemView.setLayoutParams(new ViewGroup.LayoutParams(0,0));
                 }
-
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(FriendsActivity.this,ViewFriendActivity.class);
+                        intent.putExtra("username",getRef(position).getKey().toString());
+                        startActivity(intent);
+                    }
+                });
 
             }
 

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,14 +24,13 @@ import com.squareup.picasso.Picasso;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    TextView profileName;
-    TextView profileEmail;
+    TextView profileName,profileEmail,profilePassword;
     static TextView profileUsername;
-    TextView profilePassword;
     TextView titleName, titleUsername;
     Button editProfile;
     ImageView profileImg;
-    String imageURL;
+    String imageURL,nameUser,emailUser,usernameUser,passwordUser,userUsername;
+    String nameFromDB,emailFromDB,usernameFromDB,passwordFromDB;
     Uri uri;
     DatabaseReference reference;
 
@@ -38,7 +38,14 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        reference = FirebaseDatabase.getInstance().getReference("users");
+
+        nameUser = getIntent().getStringExtra("name");
+        emailUser = getIntent().getStringExtra("email");
+        usernameUser = getIntent().getStringExtra("username");
+        passwordUser = getIntent().getStringExtra("password");
+        imageURL = getIntent().getStringExtra("profileImage");
+
+        reference = FirebaseDatabase.getInstance().getReference().child("users");
 
         profileName = findViewById(R.id.profileName);
         profileEmail = findViewById(R.id.profileEmail);
@@ -58,8 +65,6 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
 
     }
 
@@ -96,26 +101,38 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     public void showAllUserData(){
-        Intent intent = getIntent();
-        String nameUser = intent.getStringExtra("name");
-        String emailUser = intent.getStringExtra("email");
-        String usernameUser = intent.getStringExtra("username");
-        String passwordUser = intent.getStringExtra("password");
-        String profileUser = intent.getStringExtra("imageProfile");
+        reference.child(usernameUser).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    nameUser = snapshot.child("name").getValue().toString();
+                    emailUser = snapshot.child("email").getValue().toString();
+                    usernameUser = snapshot.child("username").getValue().toString();
+                    passwordUser = snapshot.child("password").getValue().toString();
+                    imageURL = snapshot.child("profileImage").getValue().toString();
 
-        titleName.setText(nameUser);
-        titleUsername.setText(usernameUser);
-        profileName.setText(nameUser);
-        profileEmail.setText(emailUser);
-        profileUsername.setText(usernameUser);
-        profilePassword.setText(passwordUser);
-        Picasso.get().load(imageURL).into(profileImg);
+                    Picasso.get().load(imageURL).into(profileImg);
+                    titleName.setText(nameUser);
+                    titleUsername.setText(usernameUser);
+                    profileName.setText(nameUser);
+                    profileEmail.setText(emailUser);
+                    profileUsername.setText(usernameUser);
+                    profilePassword.setText(passwordUser);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(ProfileActivity.this, ""+error.getMessage().toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     public void passUserData(){
-        String userUsername = profileUsername.getText().toString().trim();
+        userUsername = profileUsername.getText().toString().trim();
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
+        //reference = FirebaseDatabase.getInstance().getReference("users");
         Query checkUserDatabase = reference.orderByChild("username").equalTo(userUsername);
 
         checkUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -123,18 +140,18 @@ public class ProfileActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 if (snapshot.exists()){
-
-                    String nameFromDB = snapshot.child(userUsername).child("name").getValue(String.class);
-                    String emailFromDB = snapshot.child(userUsername).child("email").getValue(String.class);
-                    String usernameFromDB = snapshot.child(userUsername).child("username").getValue(String.class);
-                    String passwordFromDB = snapshot.child(userUsername).child("password").getValue(String.class);
+                    nameFromDB = snapshot.child(userUsername).child("name").getValue().toString();
+                    emailFromDB = snapshot.child(userUsername).child("email").getValue().toString();
+                    usernameFromDB = snapshot.child(userUsername).child("username").getValue().toString();
+                    passwordFromDB = snapshot.child(userUsername).child("password").getValue().toString();
+                    //imageURL = snapshot.child(userUsername).child("profileImage").getValue().toString();
 
                     Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
 
-                    intent.putExtra("name", nameFromDB);
-                    intent.putExtra("email", emailFromDB);
-                    intent.putExtra("username", usernameFromDB);
-                    intent.putExtra("password", passwordFromDB);
+                    intent.putExtra("name", nameUser);
+                    intent.putExtra("email", emailUser);
+                    intent.putExtra("username", usernameUser);
+                    intent.putExtra("password", passwordUser);
 
                     startActivity(intent);
 
@@ -143,7 +160,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(ProfileActivity.this, ""+error.getMessage().toString(), Toast.LENGTH_SHORT).show();
             }
         });
     }
