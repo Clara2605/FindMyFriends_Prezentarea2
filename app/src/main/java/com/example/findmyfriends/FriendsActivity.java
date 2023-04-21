@@ -57,6 +57,9 @@ public class FriendsActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
         LoadUsers("");
+//        if(ViewFriendActivity.currentState.equals("he_sent_pending")){
+//            ViewFriendActivity.sendNotification().;
+//        }
 //
 //        mAuth = FirebaseAuth.getInstance();
 //        current_user_id = mAuth.getCurrentUser().getUid();
