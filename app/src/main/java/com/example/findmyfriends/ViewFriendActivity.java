@@ -40,7 +40,7 @@ public class ViewFriendActivity extends AppCompatActivity {
     double Longitude;
     double Latitude;
     String profileImageUrl,username,name,userUsername,currentLocation;
-    String myprofileImageUrl,myusername,myname;
+    String myprofileImageUrl,myusername,myname,mycurrentLocation;
     ImageView profileImg;
     TextView friendUsername, friendName;
     Button btnSend,btnDecline;
@@ -343,7 +343,7 @@ public class ViewFriendActivity extends AppCompatActivity {
                         hashMap.put("username", username);
                         hashMap.put("profileImage", profileImageUrl);
                         hashMap.put("name", name);
-//                        hashMap.put("Current Location", helper);
+                        hashMap.put("Current Location", currentLocation);
 //                        hashMap.put("latitude", Latitude);
 //                        hashMap.put("longitude", Longitude);
 
@@ -352,6 +352,7 @@ public class ViewFriendActivity extends AppCompatActivity {
                         hashMap1.put("username", myusername);
                         hashMap1.put("profileImage", myprofileImageUrl);
                         hashMap1.put("name", myname);
+                        hashMap1.put("Current Location", mycurrentLocation);
 
                         ref.child(userUsername).child("friend").child(username).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
 
@@ -416,6 +417,7 @@ public class ViewFriendActivity extends AppCompatActivity {
                     profileImageUrl = snapshot.child("profileImage").getValue().toString();
                     username = snapshot.child("username").getValue().toString();
                     name = snapshot.child("name").getValue().toString();
+                    currentLocation = snapshot.child("Current Location").getValue().toString();
 
                     Picasso.get().load(profileImageUrl).into(profileImg);
                     friendName.setText(name);
@@ -442,6 +444,7 @@ public class ViewFriendActivity extends AppCompatActivity {
                     myprofileImageUrl = snapshot.child("profileImage").getValue().toString();
                     myusername = snapshot.child("username").getValue().toString();
                     myname = snapshot.child("name").getValue().toString();
+                    mycurrentLocation = snapshot.child("Current Location").getValue().toString();
                 } else {
                     Toast.makeText(ViewFriendActivity.this, "Data not found", Toast.LENGTH_SHORT).show();
                 }
