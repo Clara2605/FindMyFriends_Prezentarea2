@@ -20,21 +20,27 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-public class FriendsActivity extends AppCompatActivity {
+import java.util.Objects;
+
+public class FindFriendsActivity extends AppCompatActivity {
 
     FirebaseRecyclerOptions<Users> options;
     FirebaseRecyclerAdapter<Users,FriendsViewHolder> adapter;
-
-    DatabaseReference mUserRef;
+    double longitude;
+    double latitude;
+    DatabaseReference mUserRef, locationRef;
     FirebaseAuth mAuth;
     FirebaseUser mUser;
     FirebaseDatabase mDatabase;
-
+    String userUsername, friendUsername;
     RecyclerView recyclerView;
 
 //    private RecyclerView friend_list_RV;
@@ -48,14 +54,20 @@ public class FriendsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_friends);
+        setContentView(R.layout.activity_find_friends);
 
         recyclerView = findViewById(R.id.friendList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mUserRef = FirebaseDatabase.getInstance().getReference().child("users");
+        locationRef = FirebaseDatabase.getInstance().getReference().child("users").child("username").child("Current Location");
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
+
+        userUsername = profileUsername.getText().toString().trim();
+
+
+
         LoadUsers("");
 //        if(ViewFriendActivity.currentState.equals("he_sent_pending")){
 //            ViewFriendActivity.sendNotification().;
@@ -76,23 +88,40 @@ public class FriendsActivity extends AppCompatActivity {
 //        friend_list_RV.setHasFixedSize(true);
 //        friend_list_RV.setLayoutManager(new LinearLayoutManager(this));
 
-       // showPeopleList();
+        // showPeopleList();
     }
 
     private void LoadUsers(String strUser) {
         Query query = mUserRef.orderByChild("username").startAt(strUser).endAt(strUser+"\uf8ff");
-
+        Query query1 = locationRef.orderByChild("username").startAt(strUser).endAt(strUser+"\uf8ff");
         options = new FirebaseRecyclerOptions.Builder<Users>().setQuery(query,Users.class).build();
         adapter = new FirebaseRecyclerAdapter<Users, FriendsViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull FriendsViewHolder holder, int position, @NonNull Users model) {
 
-                String userUsername = profileUsername.getText().toString().trim();
-                Query checkUserDatabase = mUserRef.orderByChild("username");
-                if(!checkUserDatabase.equals(userUsername)){
+                //String userUsername = profileUsername.getText().toString().trim();
+                Query checkUserDatabase = mUserRef.orderByChild("username").equalTo(userUsername);
+                //holder.username.setText(model.getUsername());
+                friendUsername = getIntent().getStringExtra("username");
+                if(!mUserRef.child("username").equals(checkUserDatabase)){
                     Picasso.get().load(model.getProfileImage()).into(holder.profileImg);
                     holder.username.setText(model.getUsername());
                     holder.name.setText(model.getName());
+                    model.getLongitude();
+                    model.getLongitude();
+//                    locationRef.addValueEventListener(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                            latitude = Double.parseDouble(snapshot.child("Current Location/latitude").getValue().toString());
+//                            longitude = Double.parseDouble(snapshot.child("Current Location/longitude").getValue().toString());
+//
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError error) {
+//
+//                        }
+//                    });
                 }
                 else {
                     holder.itemView.setVisibility(View.GONE);
@@ -101,7 +130,7 @@ public class FriendsActivity extends AppCompatActivity {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(FriendsActivity.this,ViewFriendActivity.class);
+                        Intent intent = new Intent(FindFriendsActivity.this,ViewFriendActivity.class);
                         intent.putExtra("username",getRef(position).getKey().toString());
                         startActivity(intent);
                     }
@@ -151,22 +180,27 @@ public class FriendsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.profileMenu){
-            Intent intent = new Intent(FriendsActivity.this,ProfileActivity.class);
+            Intent intent = new Intent(FindFriendsActivity.this,ProfileActivity.class);
             startActivity(intent);
             return true;
         }
         else if (id == R.id.maps) {
-            Intent intent = new Intent(FriendsActivity.this,MapsActivity.class);
+            Intent intent = new Intent(FindFriendsActivity.this,MapsActivity.class);
             startActivity(intent);
             return true;
         }
         else if (id == R.id.friends) {
-            Intent intent = new Intent(FriendsActivity.this,FriendsActivity.class);
+            Intent intent = new Intent(FindFriendsActivity.this, FindFriendsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else if (id == R.id.myfriends) {
+            Intent intent = new Intent(FindFriendsActivity.this, FriendActivity.class);
             startActivity(intent);
             return true;
         }
         else if (id == R.id.logout) {
-            Intent intent = new Intent(FriendsActivity.this,LoginActivity.class);
+            Intent intent = new Intent(FindFriendsActivity.this,LoginActivity.class);
             startActivity(intent);
             return true;
         }

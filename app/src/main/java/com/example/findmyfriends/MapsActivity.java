@@ -36,8 +36,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.core.Path;
 
 import java.io.IOException;
 import java.util.List;
@@ -124,7 +122,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return true;
         }
         else if (id == R.id.friends) {
-            Intent intent = new Intent(MapsActivity.this,FriendsActivity.class);
+            Intent intent = new Intent(MapsActivity.this, FindFriendsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else if (id == R.id.myfriends) {
+            Intent intent = new Intent(MapsActivity.this, FriendActivity.class);
             startActivity(intent);
             return true;
         }
@@ -165,7 +168,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     LocationHelper helper = new LocationHelper(location.getLongitude(),location.getLatitude());
 
                     FirebaseDatabase.getInstance().getReference("users/"+userUsername+"/Current Location")
-                    .setValue(helper).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            .setValue(helper).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){

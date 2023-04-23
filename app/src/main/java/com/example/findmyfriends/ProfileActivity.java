@@ -24,12 +24,19 @@ import com.squareup.picasso.Picasso;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    TextView profileName,profileEmail,profilePassword;
+    TextView profileEmail;
+    TextView profilePassword;
+    TextView profileName;
     static TextView profileUsername;
     TextView titleName, titleUsername;
     Button editProfile;
-    ImageView profileImg;
-    String imageURL,nameUser,emailUser,usernameUser,passwordUser,userUsername;
+     ImageView profileImg;
+    String imageURL;
+    String nameUser;
+    String emailUser;
+    String usernameUser;
+    String passwordUser;
+    String userUsername;
     String nameFromDB,emailFromDB,usernameFromDB,passwordFromDB;
     Uri uri;
     DatabaseReference reference;
@@ -88,7 +95,12 @@ public class ProfileActivity extends AppCompatActivity {
             return true;
         }
         else if (id == R.id.friends) {
-            Intent intent = new Intent(ProfileActivity.this,FriendsActivity.class);
+            Intent intent = new Intent(ProfileActivity.this, FindFriendsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else if (id == R.id.myfriends) {
+            Intent intent = new Intent(ProfileActivity.this, FriendActivity.class);
             startActivity(intent);
             return true;
         }

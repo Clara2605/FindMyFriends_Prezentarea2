@@ -233,7 +233,7 @@ public class EditProfileActivity extends AppCompatActivity {
             return true;
         }
         else if (id == R.id.friends) {
-            Intent intent = new Intent(EditProfileActivity.this,FriendsActivity.class);
+            Intent intent = new Intent(EditProfileActivity.this, FindFriendsActivity.class);
             startActivity(intent);
             return true;
         }

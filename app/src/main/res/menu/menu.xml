@@ -28,7 +28,15 @@
              android:textStyle="bold"/>
          <item
              android:id="@+id/friends"
-             android:title="Friends"
+             android:title="Find Friends"
+             app:showAsAction="never"
+             android:icon="@drawable/ic_find_friends"
+             android:fontFamily="@font/lexend"
+             android:textColor="@color/lavender"
+             android:textStyle="bold"/>
+         <item
+             android:id="@+id/myfriends"
+             android:title="My Friends"
              app:showAsAction="never"
              android:icon="@drawable/ic_friends"
              android:fontFamily="@font/lexend"
