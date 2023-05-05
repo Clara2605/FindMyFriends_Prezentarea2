@@ -2,7 +2,6 @@ package com.example.findmyfriends;
 
 import static com.example.findmyfriends.ProfileActivity.profileUsername;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -16,7 +15,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -30,9 +28,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -51,13 +46,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final int REQUEST_CODE = 101;
     SearchView searchView;
 
-    DatabaseReference reference;
+    DatabaseReference reference , friendRef;
     FirebaseDatabase database;
+    private GetLocationTask mGetLocationTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        friendRef = FirebaseDatabase.getInstance().getReference().child("users");
 
         map = findViewById(R.id.map);
         searchView = findViewById(R.id.search);
@@ -138,21 +136,77 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+//    private void getLocation() {
+//        if (ActivityCompat.checkSelfPermission(
+//                this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+//                && ActivityCompat.checkSelfPermission(
+//                this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+//            return;
+//        }
+//
+//        Task<Location> task = fusedClient.getLastLocation();
+//
+//        task.addOnSuccessListener(new OnSuccessListener<Location>() {
+//            @Override
+//            public void onSuccess(Location location) {
+//
+//                if (location != null) {
+//                    currentLocation = location;
+//                    //Toast.makeText(getApplicationContext(), currentLocation.getLatitude() + "" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+//                    SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+//                    assert supportMapFragment != null;
+//                    supportMapFragment.getMapAsync(MapsActivity.this);
+//
+//                    //add location to firebase
+//                    String userUsername = profileUsername.getText().toString().trim();
+//                    database = FirebaseDatabase.getInstance();
+//                    reference = database.getReference("users");
+//                    Query checkUserDatabase = reference.orderByChild("username").equalTo(userUsername);
+//                    LocationHelper helper = new LocationHelper(location.getLongitude(),location.getLatitude());
+//
+//                    FirebaseDatabase.getInstance().getReference("users/"+userUsername+"/Current Location")
+//                            .setValue(helper).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<Void> task) {
+//                                    if(task.isSuccessful()){
+//                                        Toast.makeText(MapsActivity.this, "Location Saved", Toast.LENGTH_SHORT).show();
+//                                    }
+//                                    else{
+//                                        Toast.makeText(MapsActivity.this, "Location Not Saved", Toast.LENGTH_SHORT).show();
+//                                    }
+//                                }
+//                            });
+//
+////                    LocationHelper helper2 = new LocationHelper(location.getLongitude(),location.getLatitude());
+////                    friendRef.child(userUsername).child("friend").child("Current Location")
+////                            .setValue(helper2).addOnCompleteListener(new OnCompleteListener<Void>() {
+////                        @Override
+////                        public void onComplete(@NonNull Task<Void> task) {
+////                            if(task.isSuccessful()){
+////                                Toast.makeText(MapsActivity.this, "Location Saved", Toast.LENGTH_SHORT).show();
+////                            }
+////                            else{
+////                                Toast.makeText(MapsActivity.this, "Location Not Saved", Toast.LENGTH_SHORT).show();
+////                            }
+////                        }
+////                    });
+//
+//                   }
+//
+//
+//            }
+//        });
+//    }
+
+
+
     private void getLocation() {
-        if (ActivityCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
-            return;
-        }
-
-        Task<Location> task = fusedClient.getLastLocation();
-
-        task.addOnSuccessListener(new OnSuccessListener<Location>() {
+        mGetLocationTask = new GetLocationTask(this, fusedClient, new GetLocationTask.OnTaskCompleteListener() {
             @Override
-            public void onSuccess(Location location) {
-
+            public void onTaskComplete(Location location) {
                 if (location != null) {
                     currentLocation = location;
                     //Toast.makeText(getApplicationContext(), currentLocation.getLatitude() + "" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
@@ -166,23 +220,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     reference = database.getReference("users");
                     Query checkUserDatabase = reference.orderByChild("username").equalTo(userUsername);
                     LocationHelper helper = new LocationHelper(location.getLongitude(),location.getLatitude());
-
-                    FirebaseDatabase.getInstance().getReference("users/"+userUsername+"/Current Location")
-                            .setValue(helper).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()){
-                                        Toast.makeText(MapsActivity.this, "Location Saved", Toast.LENGTH_SHORT).show();
-                                    }
-                                    else{
-                                        Toast.makeText(MapsActivity.this, "Location Not Saved", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
+                    reference.child(userUsername).child("Current Location").setValue(helper);
+                   // reference.child(profileUsername.getText().toString().trim()).child("Current Location/longitude").setValue(longitude);
+//                    FirebaseDatabase.getInstance().getReference("users/"+userUsername+"/Current Location")
+//                            .setValue(helper).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<Void> task) {
+//                                    if(task.isSuccessful()){
+//                                        Toast.makeText(MapsActivity.this, "Location Saved", Toast.LENGTH_SHORT).show();
+//                                    }
+//                                    else{
+//                                        Toast.makeText(MapsActivity.this, "Location Not Saved", Toast.LENGTH_SHORT).show();
+//                                    }
+//                                }
+//                            });
+                } else {
+                    Toast.makeText(MapsActivity.this, "Could not get current location", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
+        mGetLocationTask.execute();
     }
 
     @Override

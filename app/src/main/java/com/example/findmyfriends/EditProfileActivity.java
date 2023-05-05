@@ -245,4 +245,3 @@ public class EditProfileActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
-

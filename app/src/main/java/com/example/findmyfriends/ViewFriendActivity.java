@@ -195,7 +195,8 @@ public class ViewFriendActivity extends AppCompatActivity {
 
     private NotificationCompat.Builder getNotificationBuilder()
     {
-        Intent notificationIntent = new Intent(this, FindFriendsActivity.class);
+ //      Intent notificationIntent = new Intent(this, FindFriendsActivity.class);
+        Intent notificationIntent = new Intent(this, ViewFriendActivity.class);
         PendingIntent notificationPendingIntent = PendingIntent.getActivity(this,
                 NOTIFICATION_ID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 

@@ -40,9 +40,9 @@ public class FindFriendsActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseUser mUser;
     FirebaseDatabase mDatabase;
-    String userUsername, friendUsername;
+    String userUsername, friendUsername, usernameF;
     RecyclerView recyclerView;
-
+    String currentStateF;
 //    private RecyclerView friend_list_RV;
 //
 //    private DatabaseReference friendsDatabaseReference;
@@ -66,9 +66,32 @@ public class FindFriendsActivity extends AppCompatActivity {
 
         userUsername = profileUsername.getText().toString().trim();
 
+        ViewFriendActivity viewFriendActivity = new ViewFriendActivity();
+        usernameF = viewFriendActivity.username;
+        currentStateF = viewFriendActivity.currentState;
+        if(currentStateF.equals("he_sent_pending")){
+//        if(mUserRef.child(userUsername).child("request").child("username").child("status").equals("pending")){
+            viewFriendActivity.sendNotification();
+        }
 
+//        mUserRef.child(userUsername).child("request").child("username").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if(snapshot.exists()){
+//                    if(snapshot.child("status").getValue().toString().equals("pending")){
+//                        viewFriendActivity.sendNotification();
+//
+//                    }
+//                }
+//
+//            }
 
-        LoadUsers("");
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }});
+
+            LoadUsers("");
 //        if(ViewFriendActivity.currentState.equals("he_sent_pending")){
 //            ViewFriendActivity.sendNotification().;
 //        }
